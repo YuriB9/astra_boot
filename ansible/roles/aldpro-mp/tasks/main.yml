@@ -1,0 +1,41 @@
+- name: Wait for system to become reachable
+  wait_for_connection:
+    timeout: 120
+
+- name: Install aldpro-mp
+  command: apt-get install -y -q aldpro-mp
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  become: true
+
+- name: Reboot host and wait for it to restart
+  reboot:
+    msg: "Reboot initiated by Ansible"
+    connect_timeout: 5
+    reboot_timeout: 600
+    pre_reboot_delay: 0
+    post_reboot_delay: 30
+    test_command: whoami
+  become: true
+
+- name: Update /etc/resolv.conf to configure DNS resolution
+  template: src=./template/resolv.conf.j2 dest=/etc/resolv.conf
+  become: true
+
+- name: Disable DNSSEC
+  command: sed -i "s/dnssec-validation.*\$/dnssec-validation no;/g" /etc/bind/named.conf.options
+  become: true
+
+- name: Update /etc/hosts
+  template: src=./template/hosts.j2 dest=/etc/hosts
+  become: true
+
+- name: Reload service bind9
+  ansible.builtin.systemd:
+    name: bind9.service
+    state: reloaded
+  become: true
+
+- name: Update /etc/hostname
+  template: src=./template/hostname.j2 dest=/etc/hostname
+  become: true

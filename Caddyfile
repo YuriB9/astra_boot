@@ -1,0 +1,7 @@
+#caddy file-server --root C:\packer\astra1.7.3\http --listen :2015 --browse
+
+
+:2015 {
+    root C:\packer\astra1.7.3\http
+    file_server browse
+}

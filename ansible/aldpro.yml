@@ -1,0 +1,4 @@
+- name: Set Domain Controller
+  hosts: dc1
+  roles:
+    - aldpro-mp

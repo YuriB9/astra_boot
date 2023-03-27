@@ -1,0 +1,5 @@
+vagrant-key
+.vagrant
+*.box
+packer_cache
+astra-1.7.3-smolensk-fly.json
